@@ -54,7 +54,6 @@ describe("/api", () => {
    });
  });
 });
-
 describe.only("/api/articles/:article_id", () => {
  test("should respond with the correct status code and article object", () => {
   return request(app)
@@ -91,3 +90,4 @@ describe.only("/api/articles/:article_id", () => {
    });
  });
 });
+

@@ -1,4 +1,6 @@
 const { fetchTopics, fetchArticleByID } = require("../models/topics.model");
+const endpoints = require("../endpoints.json");
+
 
 exports.getTopics = (req, res, next) => {
  fetchTopics().then((response) => {
@@ -15,4 +17,8 @@ exports.getArticleByID = (req, res, next) => {
   .catch((err) => {
    next(err);
   });
+
+exports.getEndpoints = (req, res, next) => {
+ res.status(200).send({ endpoints });
+
 };
