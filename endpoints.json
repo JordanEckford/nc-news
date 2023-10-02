@@ -28,7 +28,8 @@
      "comment_count": 6
     }
    ]
-  }
+  },
+  "requestBodyFormat": {}
  },
  "GET /api/articles/:article_id": {
   "description": "serves an object containing the article information matching the article_id",

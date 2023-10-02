@@ -25,7 +25,7 @@ describe("/api/topics", () => {
  });
 });
 describe("ANY request to invalid path", () => {
- test("should respond with a 404 error and message when atempt to access invalid path", () => {
+ test("should respond with a 404 error and message when attempt to access invalid path", () => {
   return request(app)
    .get("/api/notapath")
    .expect(404)
@@ -42,20 +42,11 @@ describe("/api", () => {
   return request(app)
    .get("/api")
    .then(({ body }) => {
-    console.log(body);
-    expect(Object.keys(body.endpoints).length).toBe(
-     Object.keys(endPoints).length
-    );
-    for (let key in body.endpoints) {
-     expect(typeof body.endpoints[key].description).toBe("string");
-     expect(typeof body.endpoints[key].queries).toBe("object");
-     expect(typeof body.endpoints[key].exampleResponse).toBe("object");
-     expect(typeof body.endpoints[key].requestBodyFormat).toBe("object");
-    }
+    expect(body.endpoints).toEqual(endPoints);
    });
  });
 });
-describe.only("/api/articles/:article_id", () => {
+describe("/api/articles/:article_id", () => {
  test("should respond with the correct status code and article object", () => {
   return request(app)
    .get("/api/articles/3")
@@ -91,4 +82,3 @@ describe.only("/api/articles/:article_id", () => {
    });
  });
 });
-

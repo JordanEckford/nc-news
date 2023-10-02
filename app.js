@@ -2,7 +2,8 @@ const express = require("express");
 const {
  getTopics,
  getArticleByID,
-  getEndPoints
+ getEndPoints,
+ getEndpoints,
 } = require("./controllers/topics.controller");
 const {
  invalidPath,

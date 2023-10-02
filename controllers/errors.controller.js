@@ -12,7 +12,7 @@ exports.handlePSQLErrors = (err, req, res, next) => {
  next(err);
 };
 
-exports.invalidPath = (err, req, res, next) => {
+exports.invalidPath = (req, res, next) => {
  res.status(404).send({ msg: "invalid path" });
  next(err);
 };
