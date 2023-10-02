@@ -3,6 +3,7 @@ const db = require("../db/connection");
 const testData = require("../db/data/test-data");
 const request = require("supertest");
 const seed = require("../db/seeds/seed");
+const endPoints = require("../endpoints.json");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -30,6 +31,63 @@ describe("ANY request to invalid path", () => {
    .expect(404)
    .then(({ body }) => {
     expect(body.msg).toBe("invalid path");
+   });
+ });
+});
+describe("/api", () => {
+ test("should respond with a 200 status code", () => {
+  return request(app).get("/api").expect(200);
+ });
+ test("should respond with an object with all available endpoints on the API", () => {
+  return request(app)
+   .get("/api")
+   .then(({ body }) => {
+    expect(Object.keys(body.endpoints).length).toBe(
+     Object.keys(endPoints).length
+    );
+    for (let key in body.endpoints) {
+     expect(typeof body.endpoints[key].description).toBe("string");
+     expect(typeof body.endpoints[key].queries).toBe("object");
+     expect(typeof body.endpoints[key].exampleResponse).toBe("object");
+     expect(typeof body.endpoints[key].requestBodyFormat).toBe("object");
+    }
+   });
+ });
+});
+
+describe.only("/api/articles/:article_id", () => {
+ test("should respond with the correct status code and article object", () => {
+  return request(app)
+   .get("/api/articles/3")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.article).toEqual({
+     article_id: 3,
+     title: "Eight pug gifs that remind me of mitch",
+     topic: "mitch",
+     author: "icellusedkars",
+     body: "some gifs",
+     created_at: "2020-11-03T09:12:00.000Z", //T seperates time and date, 000Z is offset from UTC
+     votes: 0,
+     article_img_url:
+      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    });
+   });
+ });
+ test("should return an appropriate error when an id that doesnt exist is requested", () => {
+  return request(app)
+   .get("/api/articles/9999")
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("article does not exist");
+   });
+ });
+ test("should return appropriate error when invalid id type is requested", () => {
+  return request(app)
+   .get("/api/articles/notanumber")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
    });
  });
 });
