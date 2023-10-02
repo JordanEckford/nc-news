@@ -1,5 +1,5 @@
 const express = require("express");
-const { getTopics } = require("./controllers/topics.controller");
+const { getTopics, getEndpoints } = require("./controllers/topics.controller");
 const { invalidPath } = require("./controllers/errors.controller");
 const app = express();
 
@@ -7,6 +7,7 @@ const app = express();
 app.use(express.json());
 
 //middleware routes
+app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
 
 //error handling
