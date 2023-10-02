@@ -42,6 +42,7 @@ describe("/api", () => {
   return request(app)
    .get("/api")
    .then(({ body }) => {
+    console.log(body);
     expect(Object.keys(body.endpoints).length).toBe(
      Object.keys(endPoints).length
     );
