@@ -55,3 +55,40 @@ describe("/api", () => {
    });
  });
 });
+describe.only("/api/articles/:article_id", () => {
+ test("should respond with the correct status code and article object", () => {
+  return request(app)
+   .get("/api/articles/3")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.article).toEqual({
+     article_id: 3,
+     title: "Eight pug gifs that remind me of mitch",
+     topic: "mitch",
+     author: "icellusedkars",
+     body: "some gifs",
+     created_at: "2020-11-03T09:12:00.000Z", //T seperates time and date, 000Z is offset from UTC
+     votes: 0,
+     article_img_url:
+      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    });
+   });
+ });
+ test("should return an appropriate error when an id that doesnt exist is requested", () => {
+  return request(app)
+   .get("/api/articles/9999")
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("article does not exist");
+   });
+ });
+ test("should return appropriate error when invalid id type is requested", () => {
+  return request(app)
+   .get("/api/articles/notanumber")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+});
+
