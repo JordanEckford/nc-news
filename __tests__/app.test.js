@@ -136,3 +136,96 @@ describe("/api/articles/article:id/comments", () => {
    });
  });
 });
+describe("POST /api/articles/:article_id/comments", () => {
+ test("should respond with correct status and newly created comment", () => {
+  const testComment = {
+   username: "lurker",
+   body: "Wow this is incredible",
+  };
+  return request(app)
+   .post("/api/articles/11/comments")
+   .send(testComment)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.comment).toEqual(
+     expect.objectContaining({
+      comment_id: 19,
+      body: "Wow this is incredible",
+      article_id: 11,
+      author: "lurker",
+      votes: 0,
+      created_at: expect.any(String),
+     })
+    );
+   });
+ });
+ test("should return the created comment even if additional un-needed properties are passed", () => {
+  const testComment = {
+   username: "lurker",
+   body: "Wow this is incredible",
+   lovesChocolate: true,
+   SQLInjection: "SELECT * FROM users;",
+  };
+  return request(app)
+   .post("/api/articles/11/comments")
+   .send(testComment)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.comment).toEqual(
+     expect.objectContaining({
+      comment_id: 19,
+      body: "Wow this is incredible",
+      article_id: 11,
+      author: "lurker",
+      votes: 0,
+      created_at: expect.any(String),
+     })
+    );
+   });
+ });
+ test("should respond with an error when passed a bad request for article_id", () => {
+  const testComment = { username: "lurker", body: "Wow this is incredible" };
+  return request(app)
+   .post("/api/articles/eleven/comments")
+   .send(testComment)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+ test("should respond with an error when passed an article_id not matching in the DB", () => {
+  const testComment = { username: "lurker", body: "Wow this is incredible" };
+  return request(app)
+   .post("/api/articles/999/comments")
+   .send(testComment)
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("not found");
+   });
+ });
+ test("should respond with appropriate error when username does not exist, but valid article_id is passed", () => {
+  const testComment = { username: "bananaman", body: "Wow this is incredible" };
+  return request(app)
+   .post("/api/articles/11/comments")
+   .send(testComment)
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("not found");
+   });
+ });
+ test("should respond with an error when one or more of the required keys are missing", () => {
+  const testComment = {
+   body: "Loved it!",
+   votes: 200,
+  };
+  return request(app)
+   .post("/api/articles/11/comments")
+   .send(testComment)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("post request incomplete");
+   });
+ });
+});
+
+//testing

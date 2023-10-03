@@ -9,3 +9,16 @@ exports.fetchCommentsByArticleID = (articleID) => {
   return rows;
  });
 };
+
+exports.createComment = (articleID, username, body) => {
+ const query = `
+    INSERT INTO comments
+    (article_id, author, body)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *
+    ;`;
+ return db.query(query, [articleID, username, body]).then(({ rows }) => {
+  return rows[0];
+ });
+};
