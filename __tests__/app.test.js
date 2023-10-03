@@ -227,5 +227,67 @@ describe("POST /api/articles/:article_id/comments", () => {
    });
  });
 });
-
-//testing
+describe("/api/articles/:article_id", () => {
+ test("should return the correct status code and the updated article object", () => {
+  const testObject = { inc_votes: 20 };
+  return request(app)
+   .patch("/api/articles/3")
+   .send(testObject)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.article).toEqual(
+     expect.objectContaining({
+      article_id: 3,
+      title: "Eight pug gifs that remind me of mitch",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "some gifs",
+      created_at: expect.any(String),
+      votes: 20,
+      article_img_url:
+       "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+     })
+    );
+   });
+ });
+ test("should return the correct status and response when passed an incorrect formatted article_id", () => {
+  const testObject = { inc_votes: 20 };
+  return request(app)
+   .patch("/api/articles/three")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+ test("should return the correct status and response when passed an article_id that doesn't exist", () => {
+  const testObject = { inc_votes: 20 };
+  return request(app)
+   .patch("/api/articles/999")
+   .send(testObject)
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("article not found");
+   });
+ });
+ test("should respond with appropriate error when incorrect object is sent to valid article_id", () => {
+  const testObject = { bananas: 20 };
+  return request(app)
+   .patch("/api/articles/3")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("post request incorrect");
+   });
+ });
+ test("should respond with appropriate error when object with correct property with additional properties is sent to valid article_id", () => {
+  const testObject = { inc_votes: 20, bananas: 20 };
+  return request(app)
+   .patch("/api/articles/3")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("post request incorrect");
+   });
+ });
+});

@@ -12,10 +12,10 @@ SELECT * FROM topics;
 -- GROUP BY articles.article_id
 -- ORDER BY articles.created_at DESC;
 
-SELECT * FROM articles;
+-- SELECT * FROM articles;
 
-UPDATE articles
-SET votes = votes + 10
-WHERE article_id = 4;
+-- UPDATE articles
+-- SET votes = votes + 10
+-- WHERE article_id = 4;
 
-SELECT * FROM articles;
+-- SELECT * FROM articles;
