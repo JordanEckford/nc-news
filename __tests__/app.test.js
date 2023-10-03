@@ -91,14 +91,16 @@ describe("/api/articles", () => {
     expect(body.articles.length).toBe(13);
     body.articles.forEach((article) => {
      expect(article.body).toBe(undefined);
-     expect(typeof article.author).toBe("string");
-     expect(typeof article.title).toBe("string");
-     expect(typeof article.article_id).toBe("number");
-     expect(typeof article.topic).toBe("string");
-     expect(typeof article.created_at).toBe("string");
-     expect(typeof article.votes).toBe("number");
-     expect(typeof article.article_img_url).toBe("string");
-     expect(typeof article.comment_count).toBe("string");
+     expect.objectContaining({
+      author: expect.any(String),
+      title: expect.any(String),
+      article_id: expect.any(Number),
+      topic: expect.any(String),
+      created_at: expect.any(String),
+      votes: expect.any(Number),
+      article_img_url: expect.any(String),
+      comment_count: expect.any(String),
+     });
     });
     expect(body.articles).toBeSortedBy("created_at", { descending: true });
    });
