@@ -47,7 +47,7 @@ describe("/api", () => {
  });
 });
 describe("/api/articles/:article_id", () => {
- test("should respond with the correct status code and article object", () => {
+ test("should respond with a 200 status code and article object", () => {
   return request(app)
    .get("/api/articles/3")
    .expect(200)
@@ -65,7 +65,7 @@ describe("/api/articles/:article_id", () => {
     });
    });
  });
- test("should return an appropriate error when an id that doesnt exist is requested", () => {
+ test("should return a 400 status and an appropriate error when an id that doesnt exist is requested", () => {
   return request(app)
    .get("/api/articles/9999")
    .expect(404)
@@ -73,7 +73,7 @@ describe("/api/articles/:article_id", () => {
     expect(body.msg).toBe("article does not exist");
    });
  });
- test("should return appropriate error when invalid id type is requested", () => {
+ test("should return a 400 status and appropriate error when invalid id type is requested", () => {
   return request(app)
    .get("/api/articles/notanumber")
    .expect(400)
@@ -83,7 +83,7 @@ describe("/api/articles/:article_id", () => {
  });
 });
 describe("/api/articles", () => {
- test("should return the correct status code and array of objects", () => {
+ test("should return a 200 status code and array of objects", () => {
   return request(app)
    .get("/api/articles")
    .expect(200)
@@ -107,7 +107,7 @@ describe("/api/articles", () => {
  });
 });
 describe("/api/articles/article:id/comments", () => {
- test("should return a correct status code and an array of correct comment objects in correct order", () => {
+ test("should return a 200 status code and an array of correct comment objects in correct order", () => {
   return request(app)
    .get("/api/articles/3/comments")
    .expect(200)
@@ -127,7 +127,7 @@ describe("/api/articles/article:id/comments", () => {
     expect(body.msg).toBe("bad request");
    });
  });
- test("should return the correct error when no article_id match is found", () => {
+ test("should return 404 status and the correct error when no article_id match is found", () => {
   return request(app)
    .get("/api/articles/999/comments")
    .expect(404)
@@ -137,7 +137,7 @@ describe("/api/articles/article:id/comments", () => {
  });
 });
 describe("POST /api/articles/:article_id/comments", () => {
- test("should respond with correct status and newly created comment", () => {
+ test("should respond with 201 status and newly created comment", () => {
   const testComment = {
    username: "lurker",
    body: "Wow this is incredible",
@@ -183,7 +183,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     );
    });
  });
- test("should respond with an error when passed a bad request for article_id", () => {
+ test("should respond with 400 status and an error when passed a bad request for article_id", () => {
   const testComment = { username: "lurker", body: "Wow this is incredible" };
   return request(app)
    .post("/api/articles/eleven/comments")
@@ -193,7 +193,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     expect(body.msg).toBe("bad request");
    });
  });
- test("should respond with an error when passed an article_id not matching in the DB", () => {
+ test("should respond with 404 status and an error when passed an article_id not matching in the DB", () => {
   const testComment = { username: "lurker", body: "Wow this is incredible" };
   return request(app)
    .post("/api/articles/999/comments")
@@ -203,7 +203,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     expect(body.msg).toBe("not found");
    });
  });
- test("should respond with appropriate error when username does not exist, but valid article_id is passed", () => {
+ test("should respond with 404 status and appropriate error when username does not exist, but valid article_id is passed", () => {
   const testComment = { username: "bananaman", body: "Wow this is incredible" };
   return request(app)
    .post("/api/articles/11/comments")
@@ -213,7 +213,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     expect(body.msg).toBe("not found");
    });
  });
- test("should respond with an error when one or more of the required keys are missing", () => {
+ test("should respond with 400 status and an error when one or more of the required keys are missing", () => {
   const testComment = {
    body: "Loved it!",
    votes: 200,
@@ -228,7 +228,7 @@ describe("POST /api/articles/:article_id/comments", () => {
  });
 });
 describe("/api/articles/:article_id", () => {
- test("should return the correct status code and the updated article object", () => {
+ test("should return 201 status code and the updated article object", () => {
   const testObject = { inc_votes: 20 };
   return request(app)
    .patch("/api/articles/3")
@@ -250,7 +250,7 @@ describe("/api/articles/:article_id", () => {
     );
    });
  });
- test("should return the correct status and response when passed an incorrect formatted article_id", () => {
+ test("should return 400 status and response when passed an incorrect formatted article_id", () => {
   const testObject = { inc_votes: 20 };
   return request(app)
    .patch("/api/articles/three")
@@ -260,7 +260,7 @@ describe("/api/articles/:article_id", () => {
     expect(body.msg).toBe("bad request");
    });
  });
- test("should return the correct status and response when passed an article_id that doesn't exist", () => {
+ test("should return 404 status and response when passed an article_id that doesn't exist", () => {
   const testObject = { inc_votes: 20 };
   return request(app)
    .patch("/api/articles/999")
@@ -270,7 +270,7 @@ describe("/api/articles/:article_id", () => {
     expect(body.msg).toBe("article not found");
    });
  });
- test("should respond with appropriate error when incorrect object is sent to valid article_id", () => {
+ test("should respond with 400 status and appropriate error when incorrect object is sent to valid article_id", () => {
   const testObject = { bananas: 20 };
   return request(app)
    .patch("/api/articles/3")
@@ -280,7 +280,7 @@ describe("/api/articles/:article_id", () => {
     expect(body.msg).toBe("post request incorrect");
    });
  });
- test("should respond with appropriate error when object with correct property with additional properties is sent to valid article_id", () => {
+ test("should respond with 400 status and appropriate error when object with correct property with additional properties is sent to valid article_id", () => {
   const testObject = { inc_votes: 20, bananas: 20 };
   return request(app)
    .patch("/api/articles/3")
@@ -291,3 +291,5 @@ describe("/api/articles/:article_id", () => {
    });
  });
 });
+
+//NEED TO FIX ROISINS COMMENTS
