@@ -106,3 +106,33 @@ describe("/api/articles", () => {
    });
  });
 });
+describe("/api/articles/article:id/comments", () => {
+ test("should return a correct status code and an array of correct comment objects in correct order", () => {
+  return request(app)
+   .get("/api/articles/3/comments")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.comments.length).toBe(2);
+    body.comments.forEach((comment) => {
+     expect(comment.article_id).toBe(3);
+    });
+    expect(body.comments).toBeSortedBy("created_at", { descending: true });
+   });
+ });
+ test("should return a 400 error when passed a bad request", () => {
+  return request(app)
+   .get("/api/articles/numberthree/comments")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+ test("should return the correct error when no article_id match is found", () => {
+  return request(app)
+   .get("/api/articles/999/comments")
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("article does not exist");
+   });
+ });
+});
