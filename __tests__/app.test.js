@@ -138,7 +138,34 @@ describe("/api/articles/article:id/comments", () => {
 });
 describe("POST /api/articles/:article_id/comments", () => {
  test("should respond with correct status and newly created comment", () => {
-  const testComment = { username: "lurker", body: "Wow this is incredible" };
+  const testComment = {
+   username: "lurker",
+   body: "Wow this is incredible",
+  };
+  return request(app)
+   .post("/api/articles/11/comments")
+   .send(testComment)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.comment).toEqual(
+     expect.objectContaining({
+      comment_id: 19,
+      body: "Wow this is incredible",
+      article_id: 11,
+      author: "lurker",
+      votes: 0,
+      created_at: expect.any(String),
+     })
+    );
+   });
+ });
+ test("should return the created comment even if additional un-needed properties are passed", () => {
+  const testComment = {
+   username: "lurker",
+   body: "Wow this is incredible",
+   lovesChocolate: true,
+   SQLInjection: "SELECT * FROM users;",
+  };
   return request(app)
    .post("/api/articles/11/comments")
    .send(testComment)
@@ -171,9 +198,9 @@ describe("POST /api/articles/:article_id/comments", () => {
   return request(app)
    .post("/api/articles/999/comments")
    .send(testComment)
-   .expect(400)
+   .expect(404)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("not found");
    });
  });
  test("should respond with appropriate error when username does not exist, but valid article_id is passed", () => {
@@ -183,7 +210,20 @@ describe("POST /api/articles/:article_id/comments", () => {
    .send(testComment)
    .expect(404)
    .then(({ body }) => {
-    expect(body.msg).toBe("user not found");
+    expect(body.msg).toBe("not found");
+   });
+ });
+ test("should respond with an error when one or more of the required keys are missing", () => {
+  const testComment = {
+   body: "Loved it!",
+   votes: 200,
+  };
+  return request(app)
+   .post("/api/articles/11/comments")
+   .send(testComment)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("post request incomplete");
    });
  });
 });
