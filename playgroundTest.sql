@@ -11,3 +11,6 @@ SELECT * FROM topics;
 -- ON comments.article_id = articles.article_id
 -- GROUP BY articles.article_id
 -- ORDER BY articles.created_at DESC;
+
+SELECT username FROM users
+WHERE username = 'bananaman';
