@@ -93,5 +93,15 @@
   "queries": [],
   "exampleResponse": {},
   "requestBodyFormat": {}
+ },
+ "GET /api/users": {
+  "description": "serves an array containing the all of the available user information",
+  "queries": [],
+  "exampleResponse": {
+   "username": "lurker",
+   "name": "do_nothing",
+   "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+  },
+  "requestBodyFormat": {}
  }
 }
