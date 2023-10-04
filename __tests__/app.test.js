@@ -291,5 +291,29 @@ describe("/api/articles/:article_id", () => {
    });
  });
 });
-
-//NEED TO FIX ROISINS COMMENTS
+describe("DELETE: /api/comments/:comment_id", () => {
+ test("should respond with a 204 status code and no response", () => {
+  return request(app)
+   .delete("/api/comments/16")
+   .expect(204)
+   .then(() => {
+    return request(app).get("/api/articles/6/comments").expect(404);
+   });
+ });
+ test("should respond with a 400 status and appropriate response when passed an invalid comment_id format", () => {
+  return request(app)
+   .delete("/api/comments/six")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+ test("should respond with a 404 status and appropriate response when passed a comment_id that doesn't exist", () => {
+  return request(app)
+   .delete("/api/comments/999")
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("comment not found");
+   });
+ });
+});
