@@ -8,7 +8,7 @@ const endPoints = require("../endpoints.json");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe("/api/topics", () => {
+describe("GET: /api/topics", () => {
  test("GET: should respond with a 200 status code", () => {
   return request(app).get("/api/topics").expect(200);
  });
@@ -24,7 +24,7 @@ describe("/api/topics", () => {
    });
  });
 });
-describe("ANY request to invalid path", () => {
+describe("ANY: request to invalid path", () => {
  test("should respond with a 404 error and message when attempt to access invalid path", () => {
   return request(app)
    .get("/api/notapath")
@@ -34,7 +34,7 @@ describe("ANY request to invalid path", () => {
    });
  });
 });
-describe("/api", () => {
+describe("GET: /api", () => {
  test("should respond with a 200 status code", () => {
   return request(app).get("/api").expect(200);
  });
@@ -46,7 +46,7 @@ describe("/api", () => {
    });
  });
 });
-describe("/api/articles/:article_id", () => {
+describe("GET: /api/articles/:article_id", () => {
  test("should respond with a 200 status code and article object", () => {
   return request(app)
    .get("/api/articles/3")
@@ -82,7 +82,7 @@ describe("/api/articles/:article_id", () => {
    });
  });
 });
-describe("/api/articles", () => {
+describe("GET: /api/articles", () => {
  test("should return a 200 status code and array of objects", () => {
   return request(app)
    .get("/api/articles")
@@ -106,7 +106,7 @@ describe("/api/articles", () => {
    });
  });
 });
-describe("/api/articles/article:id/comments", () => {
+describe("GET: /api/articles/article:id/comments", () => {
  test("should return a 200 status code and an array of correct comment objects in correct order", () => {
   return request(app)
    .get("/api/articles/3/comments")
@@ -136,7 +136,7 @@ describe("/api/articles/article:id/comments", () => {
    });
  });
 });
-describe("POST /api/articles/:article_id/comments", () => {
+describe("POST: /api/articles/:article_id/comments", () => {
  test("should respond with 201 status and newly created comment", () => {
   const testComment = {
    username: "lurker",
@@ -227,7 +227,7 @@ describe("POST /api/articles/:article_id/comments", () => {
    });
  });
 });
-describe("/api/articles/:article_id", () => {
+describe("PATCH: /api/articles/:article_id", () => {
  test("should return 201 status code and the updated article object", () => {
   const testObject = { inc_votes: 20 };
   return request(app)
@@ -317,7 +317,7 @@ describe("DELETE: /api/comments/:comment_id", () => {
    });
  });
 });
-describe("GET /api/users", () => {
+describe("GET: /api/users", () => {
  test("should respond with a 200 status code and array of objects containing user info", () => {
   return request(app)
    .get("/api/users")
