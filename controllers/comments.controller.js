@@ -2,6 +2,7 @@ const {
  fetchCommentsByArticleID,
  createComment,
  removeComment,
+ modifyComment,
 } = require("../models/comments.model");
 const { fetchUsersByUsername } = require("../models/users.model");
 
@@ -36,6 +37,23 @@ exports.deleteCommentByID = (req, res, next) => {
  removeComment(comment_id)
   .then(() => {
    res.status(204).send();
+  })
+  .catch((err) => {
+   next(err);
+  });
+};
+
+exports.patchCommentByID = (req, res, next) => {
+ const { comment_id } = req.params;
+ const { inc_votes } = req.body;
+
+ if (inc_votes === undefined || Object.keys(req.body).length > 1) {
+  return next({ status: 400, msg: "request body incorrect" });
+ }
+
+ modifyComment(comment_id, inc_votes)
+  .then((comment) => {
+   res.status(201).send({ comment });
   })
   .catch((err) => {
    next(err);

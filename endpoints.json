@@ -130,5 +130,18 @@
    "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
   },
   "requestBodyFormat": {}
+ },
+ "PATCH /api/comments/:comment_id": {
+  "description": "updates the vote count on a specific comment and returns the new comment object",
+  "queries": [],
+  "exampleResponse": {
+   "comment_id": 4,
+   "body": " I carry a log — yes. Is it funny to you? It is not to me.",
+   "article_id": 1,
+   "author": "icellusedkars",
+   "votes": -50,
+   "created_at": "2020-02-23T12:01:00.000Z"
+  },
+  "requestBodyFormat": { "inc_votes": "Number" }
  }
 }

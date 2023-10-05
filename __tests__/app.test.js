@@ -67,7 +67,7 @@ describe("GET: /api/articles/:article_id", () => {
     );
    });
  });
- test("should return a 400 status and an appropriate error when an id that doesnt exist is requested", () => {
+ test("should respond with 400 status and an appropriate error when an id that doesnt exist is requested", () => {
   return request(app)
    .get("/api/articles/9999")
    .expect(404)
@@ -75,7 +75,7 @@ describe("GET: /api/articles/:article_id", () => {
     expect(body.msg).toBe("article does not exist");
    });
  });
- test("should return a 400 status and appropriate error when invalid id type is requested", () => {
+ test("should respond with 400 status and appropriate error when invalid id type is requested", () => {
   return request(app)
    .get("/api/articles/notanumber")
    .expect(400)
@@ -85,7 +85,7 @@ describe("GET: /api/articles/:article_id", () => {
  });
 });
 describe("GET: /api/articles", () => {
- test("should return a 200 status code and array of objects", () => {
+ test("should respond with 200 status code and array of objects", () => {
   return request(app)
    .get("/api/articles")
    .expect(200)
@@ -109,7 +109,7 @@ describe("GET: /api/articles", () => {
  });
 });
 describe("GET: /api/articles/article:id/comments", () => {
- test("should return a 200 status code and an array of correct comment objects in correct order", () => {
+ test("should respond with 200 status code and an array of correct comment objects in correct order", () => {
   return request(app)
    .get("/api/articles/3/comments")
    .expect(200)
@@ -121,7 +121,7 @@ describe("GET: /api/articles/article:id/comments", () => {
     expect(body.comments).toBeSortedBy("created_at", { descending: true });
    });
  });
- test("should return a 400 error when passed a bad request", () => {
+ test("should respond with 400 error when passed a bad request", () => {
   return request(app)
    .get("/api/articles/numberthree/comments")
    .expect(400)
@@ -129,7 +129,7 @@ describe("GET: /api/articles/article:id/comments", () => {
     expect(body.msg).toBe("bad request");
    });
  });
- test("should return 404 status and the correct error when no article_id match is found", () => {
+ test("should respond with 404 status and the correct error when no article_id match is found", () => {
   return request(app)
    .get("/api/articles/999/comments")
    .expect(404)
@@ -230,7 +230,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
  });
 });
 describe("PATCH: /api/articles/:article_id", () => {
- test("should return 201 status code and the updated article object", () => {
+ test("should respond with 201 status code and the updated article object", () => {
   const testObject = { inc_votes: 20 };
   return request(app)
    .patch("/api/articles/3")
@@ -252,7 +252,7 @@ describe("PATCH: /api/articles/:article_id", () => {
     );
    });
  });
- test("should return 400 status and response when passed an incorrect formatted article_id", () => {
+ test("should respond with 400 status and response when passed an incorrect formatted article_id", () => {
   const testObject = { inc_votes: 20 };
   return request(app)
    .patch("/api/articles/three")
@@ -262,7 +262,7 @@ describe("PATCH: /api/articles/:article_id", () => {
     expect(body.msg).toBe("bad request");
    });
  });
- test("should return 404 status and response when passed an article_id that doesn't exist", () => {
+ test("should respond with 404 status and response when passed an article_id that doesn't exist", () => {
   const testObject = { inc_votes: 20 };
   return request(app)
    .patch("/api/articles/999")
@@ -279,7 +279,7 @@ describe("PATCH: /api/articles/:article_id", () => {
    .send(testObject)
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("post request incorrect");
+    expect(body.msg).toBe("request body incorrect");
    });
  });
  test("should respond with 400 status and appropriate error when object with correct property with additional properties is sent to valid article_id", () => {
@@ -289,7 +289,7 @@ describe("PATCH: /api/articles/:article_id", () => {
    .send(testObject)
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("post request incorrect");
+    expect(body.msg).toBe("request body incorrect");
    });
  });
 });
@@ -447,7 +447,7 @@ describe("GET: /api/articles(sorting queries)", () => {
  });
 });
 describe("GET: /api.users/:username", () => {
- test("should return a 200 status code and correct user object", () => {
+ test("should respond with 200 status code and correct user object", () => {
   return request(app)
    .get("/api/users/lurker")
    .expect(200)
@@ -462,12 +462,73 @@ describe("GET: /api.users/:username", () => {
     );
    });
  });
- test("should return a 404 status code and appropriate error when passed a username that doesn't exist", () => {
+ test("should respond with 404 status code and appropriate error when passed a username that doesn't exist", () => {
   return request(app)
    .get("/api/users/bananaman")
    .expect(404)
    .then(({ body }) => {
     expect(body.msg).toBe("user not found");
+   });
+ });
+});
+describe("PATCH: /api/comments/:comment_id", () => {
+ test("should respond with 201 status code and return updated comment", () => {
+  const testObject = { inc_votes: 50 };
+  return request(app)
+   .patch("/api/comments/4")
+   .send(testObject)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.comment).toEqual(
+     expect.objectContaining({
+      comment_id: 4,
+      body: " I carry a log — yes. Is it funny to you? It is not to me.",
+      article_id: 1,
+      author: "icellusedkars",
+      votes: -50,
+      created_at: "2020-02-23T12:01:00.000Z",
+     })
+    );
+   });
+ });
+ test("should respond with 400 status code and appropriate error when passed a comment_id in the wrong format", () => {
+  const testObject = { inc_votes: 50 };
+  return request(app)
+   .patch("/api/comments/four")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+ test("should respond with 404 status code and appropriate error when passed a comment_id not in the database", () => {
+  const testObject = { inc_votes: 50 };
+  return request(app)
+   .patch("/api/comments/999")
+   .send(testObject)
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("comment not found");
+   });
+ });
+ test("should respond with 400 status and appropriate error when object with incorrect key is sent to valid article_id", () => {
+  const testObject = { banana: 50 };
+  return request(app)
+   .patch("/api/comments/4")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+ test("should respond with 400 status and appropriate error when object with correct key but additional keys is sent to valid article_id", () => {
+  const testObject = { inc_votes: 50, banana: true };
+  return request(app)
+   .patch("/api/comments/4")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
    });
  });
 });

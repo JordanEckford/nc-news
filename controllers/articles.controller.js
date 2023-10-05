@@ -37,7 +37,7 @@ exports.patchArticleByID = (req, res, next) => {
  const { inc_votes } = req.body;
 
  if (inc_votes === undefined || Object.keys(req.body).length > 1) {
-  return next({ status: 400, msg: "post request incorrect" });
+  return next({ status: 400, msg: "request body incorrect" });
  }
  modifyArticle(article_id, inc_votes)
   .then((article) => {
