@@ -372,6 +372,32 @@ describe("GET: /api/articles/:article_id(comment_count)", () => {
    .expect(404)
    .then(({ body }) => {
     expect(body.msg).toBe("article does not exist");
+describe("GET: /api/articles/(topic query)", () => {
+ test("should respond with a 200 status code and the correct array of articles", () => {
+  return request(app)
+   .get("/api/articles?topic=cats")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.articles.length).toBe(1);
+    body.articles.forEach((article) => {
+     expect(article.topic).toBe("cats");
+    });
+   });
+ });
+ test("should respond with 404 status and suitable error message when a topic that is not in the database is passed", () => {
+  return request(app)
+   .get("/api/articles?topic=bananas")
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("not found");
+   });
+ });
+ test("should respond with a 200 status code and an empty array when passed an existing topic with no matching data", () => {
+  return request(app)
+   .get("/api/articles?topic=paper")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.articles).toEqual([]);
    });
  });
 });

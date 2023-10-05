@@ -3,6 +3,7 @@ const {
  fetchArticles,
  modifyArticle,
 } = require("../models/articles.model");
+const { fetchTopics } = require("../models/topics.model");
 
 exports.getArticleByID = (req, res, next) => {
  const articleID = req.params.article_id;
@@ -16,9 +17,20 @@ exports.getArticleByID = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
- fetchArticles().then((articles) => {
-  res.status(200).send({ articles });
- });
+ const { topic } = req.query;
+
+ const promises = [fetchArticles(topic)];
+ if (topic) {
+  promises.push(fetchTopics(topic));
+ }
+
+ Promise.all(promises)
+  .then(([articles]) => {
+   res.status(200).send({ articles });
+  })
+  .catch((err) => {
+   next(err);
+  });
 };
 
 exports.patchArticleByID = (req, res, next) => {
