@@ -610,3 +610,39 @@ describe("POST: /api/articles", () => {
    });
  });
 });
+describe("GET /api/articles(pagination)", () => {
+ test("should respond with a 200 status and the correct number of results when passed a limit", () => {
+  return request(app)
+   .get("/api/articles?limit=5")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.articles.length).toBe(5);
+   });
+ });
+ test("should respond with a 200 status and the correct number of results in correct order when passed a limit, page number, sort_by=article_id and order=asc", () => {
+  return request(app)
+   .get("/api/articles?limit=5&p=2&sort_by=article_id&order=asc")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.articles.length).toBe(5);
+    expect(body.articles[0].article_id).toBe(6);
+    expect(body.articles).toBeSortedBy("article_id", { ascending: true });
+   });
+ });
+ test("should respond with a 200 status code and include a total_count property that displays the total entries BEFORE limit was applied", () => {
+  return request(app)
+   .get("/api/articles?limit=5&p=2&sort_by=article_id&order=asc")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.articles[0].total_count).toBe("13");
+   });
+ });
+ test("should respond with a 400 status code and appropriate error when passed wrong format queries for limit and p", () => {
+  return request(app)
+   .get("/api/articles?limit=five&p=2&sort_by=article_id&order=asc")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+});
