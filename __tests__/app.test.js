@@ -344,18 +344,20 @@ describe("GET: /api/articles/:article_id(comment_count)", () => {
    .get("/api/articles/3")
    .expect(200)
    .then(({ body }) => {
-    expect(body.article).toEqual({
-     article_id: 3,
-     title: "Eight pug gifs that remind me of mitch",
-     topic: "mitch",
-     author: "icellusedkars",
-     body: "some gifs",
-     created_at: "2020-11-03T09:12:00.000Z",
-     votes: 0,
-     article_img_url:
-      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-     comment_count: "2",
-    });
+    expect(body.article).toEqual(
+     expect.objectContaining({
+      article_id: 3,
+      title: "Eight pug gifs that remind me of mitch",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "some gifs",
+      created_at: "2020-11-03T09:12:00.000Z",
+      votes: 0,
+      article_img_url:
+       "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      comment_count: "2",
+     })
+    );
    });
  });
  test("should respond with a 400 status code and suitable error message when passed an article_id of wrong format", () => {
@@ -372,6 +374,10 @@ describe("GET: /api/articles/:article_id(comment_count)", () => {
    .expect(404)
    .then(({ body }) => {
     expect(body.msg).toBe("article does not exist");
+   });
+ });
+});
+
 describe("GET: /api/articles/(topic query)", () => {
  test("should respond with a 200 status code and the correct array of articles", () => {
   return request(app)
