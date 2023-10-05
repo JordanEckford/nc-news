@@ -60,3 +60,20 @@ exports.modifyArticle = (articleID, inc_votes) => {
   return rows[0];
  });
 };
+
+exports.createArticle = (author, title, body, topic, article_img_url) => {
+ const query = `
+ INSERT INTO articles
+ (author, title, body, topic${article_img_url ? ", article_img_url" : ""})
+ VALUES
+ ($1, $2, $3, $4${article_img_url ? ", $5" : ""})
+ RETURNING *;`;
+ const values = [author, title, body, topic];
+
+ if (article_img_url) {
+  values.push(article_img_url);
+ }
+ return db.query(query, values).then(({ rows }) => {
+  return rows[0];
+ });
+};

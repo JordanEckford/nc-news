@@ -20,8 +20,12 @@ exports.getCommentsByArticleID = (req, res, next) => {
 exports.postComment = (req, res, next) => {
  const { article_id } = req.params;
  const { username, body } = req.body;
- if (username === undefined || body === undefined) {
-  return next({ status: 400, msg: "post request incomplete" });
+ if (
+  username === undefined ||
+  body === undefined ||
+  Object.keys(req.body).length !== 2
+ ) {
+  return next({ status: 400, msg: "post request incorrect" });
  }
  createComment(article_id, username, body)
   .then((comment) => {

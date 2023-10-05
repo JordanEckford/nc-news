@@ -2,6 +2,7 @@ const {
  fetchArticleByID,
  fetchArticles,
  modifyArticle,
+ createArticle,
 } = require("../models/articles.model");
 const { fetchTopics } = require("../models/topics.model");
 
@@ -46,4 +47,33 @@ exports.patchArticleByID = (req, res, next) => {
   .catch((err) => {
    next(err);
   });
+};
+
+exports.postArticle = (req, res, next) => {
+ const { author, title, body, topic, article_img_url } = req.body;
+ if (article_img_url === undefined) {
+  if (
+   author === undefined ||
+   title === undefined ||
+   body === undefined ||
+   topic === undefined ||
+   Object.keys(req.body).length !== 4
+  ) {
+   return next({ status: 400, msg: "request body incorrect" });
+  }
+ } else {
+  if (
+   author === undefined ||
+   title === undefined ||
+   body === undefined ||
+   topic === undefined ||
+   Object.keys(req.body).length !== 5
+  ) {
+   return next({ status: 400, msg: "request body incorrect" });
+  }
+ }
+ createArticle(author, title, body, topic, article_img_url).then((article) => {
+  article.comment_count = 0;
+  res.status(201).send({ article });
+ });
 };

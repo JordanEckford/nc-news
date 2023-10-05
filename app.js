@@ -10,6 +10,7 @@ const {
  getArticleByID,
  getArticles,
  patchArticleByID,
+ postArticle,
 } = require("./controllers/articles.controller");
 const {
  getCommentsByArticleID,
@@ -32,6 +33,7 @@ app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
+app.post("/api/articles", postArticle);
 app.get("/api/articles/:article_id", getArticleByID);
 app.patch("/api/articles/:article_id", patchArticleByID);
 

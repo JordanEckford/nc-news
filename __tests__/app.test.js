@@ -161,7 +161,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
     );
    });
  });
- test("should return the created comment even if additional un-needed properties are passed", () => {
+ test("should respond with 400 status and an appropriate error when additional un-needed properties are passed", () => {
   const testComment = {
    username: "lurker",
    body: "Wow this is incredible",
@@ -171,18 +171,9 @@ describe("POST: /api/articles/:article_id/comments", () => {
   return request(app)
    .post("/api/articles/11/comments")
    .send(testComment)
-   .expect(201)
+   .expect(400)
    .then(({ body }) => {
-    expect(body.comment).toEqual(
-     expect.objectContaining({
-      comment_id: 19,
-      body: "Wow this is incredible",
-      article_id: 11,
-      author: "lurker",
-      votes: 0,
-      created_at: expect.any(String),
-     })
-    );
+    expect(body.msg).toBe("post request incorrect");
    });
  });
  test("should respond with 400 status and an error when passed a bad request for article_id", () => {
@@ -225,7 +216,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
    .send(testComment)
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("post request incomplete");
+    expect(body.msg).toBe("post request incorrect");
    });
  });
 });
@@ -446,7 +437,7 @@ describe("GET: /api/articles(sorting queries)", () => {
    });
  });
 });
-describe("GET: /api.users/:username", () => {
+describe("GET: /api/users/:username", () => {
  test("should respond with 200 status code and correct user object", () => {
   return request(app)
    .get("/api/users/lurker")
@@ -525,6 +516,93 @@ describe("PATCH: /api/comments/:comment_id", () => {
   const testObject = { inc_votes: 50, banana: true };
   return request(app)
    .patch("/api/comments/4")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+});
+describe("POST: /api/articles", () => {
+ test("should respond with a 201 status and the newly created article object when passed full, correct object", () => {
+  const testObject = {
+   author: "lurker",
+   title: "What to do?",
+   body: "Not sure what to do? Me neither...",
+   topic: "cats",
+   article_img_url: "test",
+  };
+  return request(app)
+   .post("/api/articles")
+   .send(testObject)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.article).toEqual(
+     expect.objectContaining({
+      author: "lurker",
+      title: "What to do?",
+      body: "Not sure what to do? Me neither...",
+      topic: "cats",
+      article_id: 14,
+      votes: 0,
+      created_at: expect.any(String),
+      comment_count: 0,
+      article_img_url: "test",
+     })
+    );
+   });
+ });
+ test("should respond with a 201 status and the newly created article object when passed everything correct but no article_img_url (defaults to something in DB)", () => {
+  const testObject = {
+   author: "lurker",
+   title: "What to do?",
+   body: "Not sure what to do? Me neither...",
+   topic: "cats",
+  };
+  return request(app)
+   .post("/api/articles")
+   .send(testObject)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.article).toEqual(
+     expect.objectContaining({
+      author: "lurker",
+      title: "What to do?",
+      body: "Not sure what to do? Me neither...",
+      topic: "cats",
+      article_id: 14,
+      votes: 0,
+      created_at: expect.any(String),
+      comment_count: 0,
+      article_img_url:
+       "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+     })
+    );
+   });
+ });
+ test("should respond with a 400 status and appropriate error when the object posted is incomplete", () => {
+  const testObject = {
+   title: "What to do?",
+   body: "Not sure what to do? Me neither...",
+  };
+  return request(app)
+   .post("/api/articles")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+ test("should respond with a 400 status and appropriate error when the object posted is complete, but includes additional keys", () => {
+  const testObject = {
+   author: "lurker",
+   title: "What to do?",
+   body: "Not sure what to do? Me neither...",
+   topic: "cats",
+   bananas: true,
+  };
+  return request(app)
+   .post("/api/articles")
    .send(testObject)
    .expect(400)
    .then(({ body }) => {
