@@ -637,9 +637,17 @@ describe("GET /api/articles(pagination)", () => {
     expect(body.articles[0].total_count).toBe("13");
    });
  });
- test("should respond with a 400 status code and appropriate error when passed wrong format queries for limit and p", () => {
+ test("should respond with a 400 status code and appropriate error when passed wrong format queries for limit", () => {
   return request(app)
    .get("/api/articles?limit=five&p=2&sort_by=article_id&order=asc")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+ test("should respond with a 400 status code and appropriate error when passed wrong format queries for p", () => {
+  return request(app)
+   .get("/api/articles?limit=5&p=two&sort_by=article_id&order=asc")
    .expect(400)
    .then(({ body }) => {
     expect(body.msg).toBe("bad request");
