@@ -446,3 +446,28 @@ describe("GET: /api/articles(sorting queries)", () => {
    });
  });
 });
+describe("GET: /api.users/:username", () => {
+ test("should return a 200 status code and correct user object", () => {
+  return request(app)
+   .get("/api/users/lurker")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.user).toEqual(
+     expect.objectContaining({
+      username: "lurker",
+      name: "do_nothing",
+      avatar_url:
+       "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+     })
+    );
+   });
+ });
+ test("should return a 404 status code and appropriate error when passed a username that doesn't exist", () => {
+  return request(app)
+   .get("/api/users/bananaman")
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("user not found");
+   });
+ });
+});
