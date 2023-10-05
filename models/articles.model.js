@@ -10,13 +10,16 @@ exports.fetchArticleByID = (articleID) => {
  });
 };
 
-exports.fetchArticles = () => {
- const query = `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count FROM articles
-    FULL OUTER JOIN comments
-    ON comments.article_id = articles.article_id
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`;
- return db.query(query).then(({ rows }) => {
+exports.fetchArticles = (topic) => {
+ const values = [];
+ let query = `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count FROM articles FULL OUTER JOIN comments ON comments.article_id = articles.article_id`;
+
+ if (topic) {
+  query += ` WHERE topic = $${values.length + 1}`;
+  values.push(topic);
+ }
+ query += ` GROUP BY articles.article_id ORDER BY articles.created_at DESC;`;
+ return db.query(query, values).then(({ rows }) => {
   return rows;
  });
 };
