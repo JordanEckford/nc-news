@@ -407,3 +407,42 @@ describe("GET: /api/articles/(topic query)", () => {
    });
  });
 });
+describe("GET: /api/articles(sorting queries)", () => {
+ test("should respond with a 200 status code and correct array of articles sorted by specified column defaulting to descending", () => {
+  return request(app)
+   .get("/api/articles?sort_by=title")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.articles.length).toBe(13);
+    expect(body.articles).toBeSortedBy("title", { descending: true });
+   });
+ });
+ test("should respond with a 200 status code and correct array of articles sorted by specified column, topic, AND ascending", () => {
+  return request(app)
+   .get("/api/articles?topic=mitch&sort_by=article_id&order=asc")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.articles.length).toBe(12);
+    expect(body.articles).toBeSortedBy("article_id", { ascending: true });
+    body.articles.forEach((article) => {
+     expect(article.topic).toBe("mitch");
+    });
+   });
+ });
+ test("should respond with a 400 status code and suitable response when passed a sort_by query that isnt available", () => {
+  return request(app)
+   .get("/api/articles?sort_by=bananas")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("invalid sort_by query");
+   });
+ });
+ test("should respond with a 400 status code and suitable response when passed an order query that isnt available", () => {
+  return request(app)
+   .get("/api/articles?order=hello")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("invalid order query");
+   });
+ });
+});

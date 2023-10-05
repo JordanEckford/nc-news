@@ -11,7 +11,28 @@ exports.fetchArticleByID = (articleID) => {
  });
 };
 
-exports.fetchArticles = (topic) => {
+exports.fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
+ const validSortBys = {
+  article_id: "article_id",
+  title: "title",
+  topic: "topic",
+  author: "author",
+  body: "body",
+  created_at: "created_at",
+  votes: "votes",
+  article_img_url: "article_img_url",
+ };
+ const validOrders = {
+  asc: "ASC",
+  desc: "DESC",
+ };
+ if (!(order in validOrders)) {
+  return Promise.reject({ status: 400, msg: "invalid order query" });
+ }
+ if (!(sort_by in validSortBys)) {
+  return Promise.reject({ status: 400, msg: "invalid sort_by query" });
+ }
+
  const values = [];
  let query = `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count FROM articles FULL OUTER JOIN comments ON comments.article_id = articles.article_id`;
 
@@ -19,7 +40,7 @@ exports.fetchArticles = (topic) => {
   query += ` WHERE topic = $${values.length + 1}`;
   values.push(topic);
  }
- query += ` GROUP BY articles.article_id ORDER BY articles.created_at DESC;`;
+ query += ` GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order};`;
  return db.query(query, values).then(({ rows }) => {
   return rows;
  });
