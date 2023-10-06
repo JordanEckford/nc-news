@@ -52,28 +52,17 @@ exports.patchArticleByID = (req, res, next) => {
 
 exports.postArticle = (req, res, next) => {
  const { author, title, body, topic, article_img_url } = req.body;
- if (article_img_url === undefined) {
-  if (
-   author === undefined ||
-   title === undefined ||
-   body === undefined ||
-   topic === undefined ||
-   Object.keys(req.body).length !== 4
-  ) {
-   return next({ status: 400, msg: "request body incorrect" });
-  }
- } else {
-  if (
-   author === undefined ||
-   title === undefined ||
-   body === undefined ||
-   topic === undefined ||
-   Object.keys(req.body).length !== 5
-  ) {
-   return next({ status: 400, msg: "request body incorrect" });
-  }
- }
 
+ if (
+  !author ||
+  !title ||
+  !body ||
+  !topic ||
+  (!article_img_url && Object.keys(req.body).length !== 4) ||
+  (article_img_url && Object.keys(req.body).length !== 5)
+ ) {
+  return next({ status: 400, msg: "request body incorrect" });
+ }
  createArticle(author, title, body, topic, article_img_url)
   .then((article) => {
    article.comment_count = 0;

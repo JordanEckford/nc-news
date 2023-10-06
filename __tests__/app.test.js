@@ -90,7 +90,7 @@ describe("GET: /api/articles", () => {
    .get("/api/articles")
    .expect(200)
    .then(({ body }) => {
-    expect(body.articles.length).toBe(13);
+    expect(body.articles.length).toBe(10);
     body.articles.forEach((article) => {
      expect(article.body).toBe(undefined);
      expect.objectContaining({
@@ -403,7 +403,7 @@ describe("GET: /api/articles(sorting queries)", () => {
    .get("/api/articles?sort_by=title")
    .expect(200)
    .then(({ body }) => {
-    expect(body.articles.length).toBe(13);
+    expect(body.articles.length).toBe(10);
     expect(body.articles).toBeSortedBy("title", { descending: true });
    });
  });
@@ -412,7 +412,7 @@ describe("GET: /api/articles(sorting queries)", () => {
    .get("/api/articles?topic=mitch&sort_by=article_id&order=asc")
    .expect(200)
    .then(({ body }) => {
-    expect(body.articles.length).toBe(12);
+    expect(body.articles.length).toBe(10);
     expect(body.articles).toBeSortedBy("article_id", { ascending: true });
     body.articles.forEach((article) => {
      expect(article.topic).toBe("mitch");
@@ -762,10 +762,10 @@ describe("DELETE: /api/articles/:article_id", () => {
    .expect(204)
    .then(() => {
     return request(app)
-     .get("/api/articles")
-     .expect(200)
+     .get("/api/articles/3")
+     .expect(404)
      .then(({ body }) => {
-      expect(body.articles.length).toBe(12);
+      expect(body.msg).toBe("article does not exist");
      });
    });
  });
@@ -783,6 +783,148 @@ describe("DELETE: /api/articles/:article_id", () => {
    .expect(400)
    .then(({ body }) => {
     expect(body.msg).toBe("request included invalid format");
+   });
+ });
+});
+describe("GET: /api/articles/:article_id/comments", () => {
+ test("should return a 200 status code and the correct array of comments", () => {
+  return request(app)
+   .get("/api/articles/1/comments?limit=5")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.comments.length).toBe(5);
+    body.comments.forEach((comment) => {
+     expect(comment.article_id).toBe(1);
+    });
+   });
+ });
+ test("should return a 200 status code and the correct array of comments when passed a limit and page num", () => {
+  return request(app)
+   .get("/api/articles/1/comments?limit=3&p=3")
+   .expect(200)
+   .then(({ body }) => {
+    expect(body.comments.length).toBe(3);
+    expect(body.comments[0].body).toBe("I hate streaming eyes even more");
+    expect(body.comments[1].body).toBe(
+     "Massive intercranial brain haemorrhage"
+    );
+    expect(body.comments[2].body).toBe(
+     "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works."
+    );
+    expect(body.comments).toBeSortedBy("created_at", { descending: true });
+   });
+ });
+ test("should return a 400 status and suitable error when passed a limit in the wrong format", () => {
+  return request(app)
+   .get("/api/articles/1/comments?limit=three&p=3")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request included invalid format");
+   });
+ });
+ test("should return a 400 status and suitable error when passed a page number in the wrong format", () => {
+  return request(app)
+   .get("/api/articles/1/comments?limit=3&p=three")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request included invalid format");
+   });
+ });
+});
+//Extra
+describe("POST: /api/users", () => {
+ test("should respond with a 201 status code and the created user object", () => {
+  const testUser = {
+   username: "Jordan123",
+   name: "Jordan",
+   avatar_url: "test",
+  };
+  return request(app)
+   .post("/api/users")
+   .send(testUser)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.user).toEqual(
+     expect.objectContaining({
+      username: "Jordan123",
+      name: "Jordan",
+      avatar_url: "test",
+     })
+    );
+   });
+ });
+ test("should respond with a 201 status code and the created user object when passed an object with no avatar_url but the correct other keys (avatar_url can be null)", () => {
+  const testUser = {
+   username: "Jordan123",
+   name: "Jordan",
+  };
+  return request(app)
+   .post("/api/users")
+   .send(testUser)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.user).toEqual(
+     expect.objectContaining({
+      username: "Jordan123",
+      name: "Jordan",
+      avatar_url: null,
+     })
+    );
+   });
+ });
+ test("should respond with a 400 status code and the created user object when passed a random key instead of avatar_url", () => {
+  const testUser = {
+   username: "Jordan123",
+   name: "Jordan",
+   banana: true,
+  };
+  return request(app)
+   .post("/api/users")
+   .send(testUser)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toEqual("request body incorrect");
+   });
+ });
+ test("should respond with a 400 status and appropriate error when passed an incomplete object", () => {
+  const testUser = {
+   username: "Jordan123",
+   avatar_url: "test",
+  };
+  return request(app)
+   .post("/api/users")
+   .send(testUser)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+ test("should respond with a 400 status and appropriate error when passed a complete object but with wrong keys", () => {
+  const testUser = {
+   username: "Jordan123",
+   avatar_url: "test",
+   banana: true,
+  };
+  return request(app)
+   .post("/api/users")
+   .send(testUser)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+ test("should respond with a 400 status and appropriate error when passed a username that already exists in the DB", () => {
+  const testUser = {
+   username: "lurker",
+   name: "test",
+   avatar_url: "test",
+  };
+  return request(app)
+   .post("/api/users")
+   .send(testUser)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("key already exists");
    });
  });
 });

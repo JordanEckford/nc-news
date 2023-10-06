@@ -80,7 +80,7 @@
   "requestBodyFormat": {}
  },
  "POST /api/articles/:article_id/comments": {
-  "description": "posts a comment linked the the article id and returns the newly created comment",
+  "description": "posts a comment linked the the article id and returns the newly created comment. Defaults to 10 per page, starting on page 1, ordered by created_at desc",
   "queries": [],
   "exampleResponse": {
    "comment_id": 19,

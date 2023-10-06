@@ -8,7 +8,8 @@ const { fetchUsersByUsername } = require("../models/users.model");
 
 exports.getCommentsByArticleID = (req, res, next) => {
  const { article_id } = req.params;
- fetchCommentsByArticleID(article_id)
+ const { limit, p } = req.query;
+ fetchCommentsByArticleID(article_id, limit, p)
   .then((comments) => {
    res.status(200).send({ comments });
   })

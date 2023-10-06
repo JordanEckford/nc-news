@@ -1,8 +1,12 @@
 const db = require("../db/connection");
 
-exports.fetchCommentsByArticleID = (articleID) => {
- const query = `SELECT * FROM comments WHERE article_ID = $1 ORDER BY created_at DESC;`;
- return db.query(query, [articleID]).then(({ rows }) => {
+exports.fetchCommentsByArticleID = (article_id, limit = 10, p = 1) => {
+ const values = [article_id, limit];
+ const query = `SELECT * FROM comments WHERE article_ID = $1 ORDER BY created_at DESC
+ LIMIT $2 OFFSET $3;`;
+ const pageNum = (+p - 1) * +limit;
+ values.push(pageNum);
+ return db.query(query, values).then(({ rows }) => {
   if (rows.length === 0) {
    return Promise.reject({ status: 404, msg: "article does not exist" });
   }
