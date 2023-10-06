@@ -17,7 +17,7 @@ exports.getCommentsByArticleID = (req, res, next) => {
   });
 };
 
-exports.postComment = (req, res, next) => {
+exports.postCommentByArticleID = (req, res, next) => {
  const { article_id } = req.params;
  const { username, body } = req.body;
  if (

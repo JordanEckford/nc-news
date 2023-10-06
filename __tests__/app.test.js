@@ -80,7 +80,7 @@ describe("GET: /api/articles/:article_id", () => {
    .get("/api/articles/notanumber")
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
 });
@@ -126,7 +126,7 @@ describe("GET: /api/articles/article:id/comments", () => {
    .get("/api/articles/numberthree/comments")
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with 404 status and the correct error when no article_id match is found", () => {
@@ -183,7 +183,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
    .send(testComment)
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with 404 status and an error when passed an article_id not matching in the DB", () => {
@@ -250,7 +250,7 @@ describe("PATCH: /api/articles/:article_id", () => {
    .send(testObject)
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with 404 status and response when passed an article_id that doesn't exist", () => {
@@ -298,7 +298,7 @@ describe("DELETE: /api/comments/:comment_id", () => {
    .delete("/api/comments/six")
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with a 404 status and appropriate response when passed a comment_id that doesn't exist", () => {
@@ -356,7 +356,7 @@ describe("GET: /api/articles/:article_id(comment_count)", () => {
    .get("/api/articles/three")
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with a 404 status code and suitable error message when passed an article_id that doesn't exist", () => {
@@ -368,7 +368,6 @@ describe("GET: /api/articles/:article_id(comment_count)", () => {
    });
  });
 });
-
 describe("GET: /api/articles/(topic query)", () => {
  test("should respond with a 200 status code and the correct array of articles", () => {
   return request(app)
@@ -489,7 +488,7 @@ describe("PATCH: /api/comments/:comment_id", () => {
    .send(testObject)
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with 404 status code and appropriate error when passed a comment_id not in the database", () => {
@@ -672,7 +671,7 @@ describe("GET /api/articles(pagination)", () => {
    .get("/api/articles?limit=five&p=2&sort_by=article_id&order=asc")
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with a 400 status code and appropriate error when passed wrong format queries for p", () => {
@@ -680,7 +679,7 @@ describe("GET /api/articles(pagination)", () => {
    .get("/api/articles?limit=5&p=two&sort_by=article_id&order=asc")
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
 });
@@ -756,7 +755,7 @@ describe("POST: /api/topics", () => {
    });
  });
 });
-describe("DELETE: .api.articles/:article_id", () => {
+describe("DELETE: /api/articles/:article_id", () => {
  test("should return a 204 status code and no content, but delet all the comments relating to the passed article before deleting the article", () => {
   return request(app)
    .delete("/api/articles/3")
@@ -778,12 +777,12 @@ describe("DELETE: .api.articles/:article_id", () => {
     expect(body.msg).toBe("not found");
    });
  });
- test("should return a 400 status and appropriate error when passed an article ID that doesn't fir formatting", () => {
+ test("should return a 400 status and appropriate error when passed an article ID that doesn't fit formatting", () => {
   return request(app)
    .delete("/api/articles/three")
    .expect(400)
    .then(({ body }) => {
-    expect(body.msg).toBe("bad request");
+    expect(body.msg).toBe("request included invalid format");
    });
  });
 });
