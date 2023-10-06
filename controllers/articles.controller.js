@@ -3,6 +3,7 @@ const {
  fetchArticles,
  modifyArticle,
  createArticle,
+ removeArticle,
 } = require("../models/articles.model");
 const { fetchTopics } = require("../models/topics.model");
 
@@ -77,6 +78,17 @@ exports.postArticle = (req, res, next) => {
   .then((article) => {
    article.comment_count = 0;
    res.status(201).send({ article });
+  })
+  .catch((err) => {
+   next(err);
+  });
+};
+
+exports.deleteArticle = (req, res, next) => {
+ const { article_id } = req.params;
+ removeArticle(article_id)
+  .then(() => {
+   res.status(204).send();
   })
   .catch((err) => {
    next(err);

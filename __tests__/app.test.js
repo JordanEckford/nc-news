@@ -386,7 +386,7 @@ describe("GET: /api/articles/(topic query)", () => {
    .get("/api/articles?topic=bananas")
    .expect(404)
    .then(({ body }) => {
-    expect(body.msg).toBe("not found");
+    expect(body.msg).toBe("topic not found");
    });
  });
  test("should respond with a 200 status code and an empty array when passed an existing topic with no matching data", () => {
@@ -678,6 +678,109 @@ describe("GET /api/articles(pagination)", () => {
  test("should respond with a 400 status code and appropriate error when passed wrong format queries for p", () => {
   return request(app)
    .get("/api/articles?limit=5&p=two&sort_by=article_id&order=asc")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("bad request");
+   });
+ });
+});
+describe("POST: /api/topics", () => {
+ test("should respond with a 201 status code and the created topic object", () => {
+  const testObject = {
+   slug: "Jordan",
+   description: "Loves testing",
+  };
+  return request(app)
+   .post("/api/topics")
+   .send(testObject)
+   .expect(201)
+   .then(({ body }) => {
+    expect(body.topic).toEqual(
+     expect.objectContaining({
+      slug: "Jordan",
+      description: "Loves testing",
+     })
+    );
+   });
+ });
+ test("should return a 400 status code and appropriate error when passed a topic that already exists", () => {
+  const testObject = {
+   slug: "mitch",
+   description: "Loves testing",
+  };
+  return request(app)
+   .post("/api/topics")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("key already exists");
+   });
+ });
+ test("should return a 400 status code and appropriate error when passed a correct object with additional keys", () => {
+  const testObject = {
+   slug: "Jordan",
+   description: "Loves testing",
+   isBanana: true,
+  };
+  return request(app)
+   .post("/api/topics")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+ test("should return a 400 status code and appropriate error when passed an incorrect object with correct number of keys", () => {
+  const testObject = {
+   description: "Loves testing",
+   isBanana: true,
+  };
+  return request(app)
+   .post("/api/topics")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+ test("should return a 400 status code and appropriate error when passed an object with not enough keys", () => {
+  const testObject = {
+   description: "Loves testing",
+  };
+  return request(app)
+   .post("/api/topics")
+   .send(testObject)
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request body incorrect");
+   });
+ });
+});
+describe("DELETE: .api.articles/:article_id", () => {
+ test("should return a 204 status code and no content, but delet all the comments relating to the passed article before deleting the article", () => {
+  return request(app)
+   .delete("/api/articles/3")
+   .expect(204)
+   .then(() => {
+    return request(app)
+     .get("/api/articles")
+     .expect(200)
+     .then(({ body }) => {
+      expect(body.articles.length).toBe(12);
+     });
+   });
+ });
+ test("should return a 404 status and appropriate error when passed an article ID that doesn't exist", () => {
+  return request(app)
+   .delete("/api/articles/999")
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("not found");
+   });
+ });
+ test("should return a 400 status and appropriate error when passed an article ID that doesn't fir formatting", () => {
+  return request(app)
+   .delete("/api/articles/three")
    .expect(400)
    .then(({ body }) => {
     expect(body.msg).toBe("bad request");

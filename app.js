@@ -1,5 +1,9 @@
 const express = require("express");
-const { getTopics, getEndpoints } = require("./controllers/topics.controller");
+const {
+ getTopics,
+ getEndpoints,
+ postTopic,
+} = require("./controllers/topics.controller");
 const {
  invalidPath,
  handleCustomErrors,
@@ -11,6 +15,7 @@ const {
  getArticles,
  patchArticleByID,
  postArticle,
+ deleteArticle,
 } = require("./controllers/articles.controller");
 const {
  getCommentsByArticleID,
@@ -31,11 +36,13 @@ app.use(express.json());
 //middleware routes
 app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
+app.post("/api/topics", postTopic);
 
 app.get("/api/articles", getArticles);
 app.post("/api/articles", postArticle);
 app.get("/api/articles/:article_id", getArticleByID);
 app.patch("/api/articles/:article_id", patchArticleByID);
+app.delete("/api/articles/:article_id", deleteArticle);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleID);
 app.post("/api/articles/:article_id/comments", postComment);

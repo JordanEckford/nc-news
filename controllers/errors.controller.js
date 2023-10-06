@@ -10,6 +10,8 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   res.status(400).send({ msg: "bad request" });
  } else if (err.code === "23503") {
   res.status(404).send({ msg: "1 or more properties not found" });
+ } else if (err.code === "23505") {
+  res.status(400).send({ msg: "key already exists" });
  }
  next(err);
 };

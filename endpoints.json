@@ -167,5 +167,23 @@
    "topic": "string",
    "article_img_url": "string - OPTIONAL"
   }
+ },
+ "POST /api/topics": {
+  "description": "posts a topic to the database and returns the newly created topic object. slug is a unique identifier",
+  "queries": [],
+  "exampleResponse": {
+   "description": "Loves testing",
+   "isBanana": true
+  },
+  "requestBodyFormat": {
+   "slug": "String",
+   "description": "String"
+  }
+ },
+ "DELETE /api/articles": {
+  "description": "deletes the article and all comments associated with the passed article, nothing is returned",
+  "queries": [],
+  "exampleResponse": {},
+  "requestBodyFormat": {}
  }
 }
