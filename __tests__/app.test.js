@@ -682,6 +682,14 @@ describe("GET /api/articles(pagination)", () => {
     expect(body.msg).toBe("request included invalid format");
    });
  });
+ test("should respond with a 400 status code and appropriate error when passed negative number for p", () => {
+  return request(app)
+   .get("/api/articles?limit=5&p=-1")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request included invalid format");
+   });
+ });
 });
 describe("POST: /api/topics", () => {
  test("should respond with a 201 status code and the created topic object", () => {
@@ -786,7 +794,7 @@ describe("DELETE: /api/articles/:article_id", () => {
    });
  });
 });
-describe("GET: /api/articles/:article_id/comments", () => {
+describe("GET: /api/articles/:article_id/comments (pagination)", () => {
  test("should respond with a 200 status code and the correct array of comments", () => {
   return request(app)
    .get("/api/articles/1/comments?limit=5")
@@ -812,6 +820,14 @@ describe("GET: /api/articles/:article_id/comments", () => {
      "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works."
     );
     expect(body.comments).toBeSortedBy("created_at", { descending: true });
+   });
+ });
+ test("should respond with a 400 status code and appropriate error when passed negative number for p", () => {
+  return request(app)
+   .get("/api/articles?limit=5&p=-1")
+   .expect(400)
+   .then(({ body }) => {
+    expect(body.msg).toBe("request included invalid format");
    });
  });
  test("should respond with a 400 status and suitable error when passed a limit in the wrong format", () => {

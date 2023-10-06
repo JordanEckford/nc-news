@@ -38,7 +38,6 @@ exports.fetchArticles = (
  if (!(sort_by in validSortBys)) {
   return Promise.reject({ status: 400, msg: "invalid sort_by query" });
  }
-
  const values = [];
  let query = `SELECT count(*) OVER() AS total_count, articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count FROM articles FULL OUTER JOIN comments ON comments.article_id = articles.article_id`;
 

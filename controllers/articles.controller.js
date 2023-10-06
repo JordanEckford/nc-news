@@ -20,7 +20,9 @@ exports.getArticleByID = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
  const { topic, sort_by, order, limit, p } = req.query;
-
+ if (+p < 1) {
+  return next({ status: 400, msg: "request included invalid format" });
+ }
  const promises = [fetchArticles(topic, sort_by, order, limit, p)];
  if (topic) {
   promises.push(fetchTopics(topic));
