@@ -134,7 +134,7 @@ describe("GET: /api/articles/article:id/comments", () => {
    .get("/api/articles/999/comments")
    .expect(404)
    .then(({ body }) => {
-    expect(body.msg).toBe("article does not exist");
+    expect(body.msg).toBe("no article(s) found");
    });
  });
 });
@@ -824,7 +824,7 @@ describe("GET: /api/articles/:article_id/comments (pagination)", () => {
  });
  test("should respond with a 400 status code and appropriate error when passed negative number for p", () => {
   return request(app)
-   .get("/api/articles?limit=5&p=-1")
+   .get("/api/articles/3/comments?limit=5&p=-1")
    .expect(400)
    .then(({ body }) => {
     expect(body.msg).toBe("request included invalid format");

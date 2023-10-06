@@ -8,7 +8,7 @@ exports.fetchCommentsByArticleID = (article_id, limit = 10, p = 1) => {
  values.push(pageNum);
  return db.query(query, values).then(({ rows }) => {
   if (rows.length === 0) {
-   return Promise.reject({ status: 404, msg: "article does not exist" });
+   return Promise.reject({ status: 404, msg: "no article(s) found" });
   }
   return rows;
  });
