@@ -27,6 +27,7 @@ const {
  getUsers,
  getUserByUsername,
 } = require("./controllers/users.controller");
+const apiRouter = require("./routes/api-router");
 
 const app = express();
 
@@ -34,24 +35,7 @@ const app = express();
 app.use(express.json());
 
 //middleware routes
-app.get("/api", getEndpoints);
-app.get("/api/topics", getTopics);
-app.post("/api/topics", postTopic);
-
-app.get("/api/articles", getArticles);
-app.post("/api/articles", postArticle);
-app.get("/api/articles/:article_id", getArticleByID);
-app.patch("/api/articles/:article_id", patchArticleByID);
-app.delete("/api/articles/:article_id", deleteArticle);
-
-app.get("/api/articles/:article_id/comments", getCommentsByArticleID);
-app.post("/api/articles/:article_id/comments", postCommentByArticleID);
-
-app.get("/api/users", getUsers);
-app.get("/api/users/:username", getUserByUsername);
-
-app.patch("/api/comments/:comment_id", patchCommentByID);
-app.delete("/api/comments/:comment_id", deleteCommentByID);
+app.use("/api", apiRouter);
 
 //error handling
 
