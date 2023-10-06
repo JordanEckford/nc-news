@@ -72,8 +72,13 @@ exports.postArticle = (req, res, next) => {
    return next({ status: 400, msg: "request body incorrect" });
   }
  }
- createArticle(author, title, body, topic, article_img_url).then((article) => {
-  article.comment_count = 0;
-  res.status(201).send({ article });
- });
+
+ createArticle(author, title, body, topic, article_img_url)
+  .then((article) => {
+   article.comment_count = 0;
+   res.status(201).send({ article });
+  })
+  .catch((err) => {
+   next(err);
+  });
 };

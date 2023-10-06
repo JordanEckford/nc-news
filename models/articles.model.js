@@ -48,6 +48,7 @@ exports.fetchArticles = (
  }
  query += ` GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order} 
  LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
+
  const pageNum = (+p - 1) * +limit;
  values.push(limit, pageNum);
 

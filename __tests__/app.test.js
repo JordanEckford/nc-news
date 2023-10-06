@@ -193,7 +193,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
    .send(testComment)
    .expect(404)
    .then(({ body }) => {
-    expect(body.msg).toBe("not found");
+    expect(body.msg).toBe("1 or more properties not found");
    });
  });
  test("should respond with 404 status and appropriate error when username does not exist, but valid article_id is passed", () => {
@@ -203,7 +203,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
    .send(testComment)
    .expect(404)
    .then(({ body }) => {
-    expect(body.msg).toBe("not found");
+    expect(body.msg).toBe("1 or more properties not found");
    });
  });
  test("should respond with 400 status and an error when one or more of the required keys are missing", () => {
@@ -607,6 +607,36 @@ describe("POST: /api/articles", () => {
    .expect(400)
    .then(({ body }) => {
     expect(body.msg).toBe("request body incorrect");
+   });
+ });
+ test("should respond with a 404 error and appropriate error message when topic does not exist in the database", () => {
+  const testObject = {
+   author: "lurker",
+   title: "What to do?",
+   body: "Not sure what to do? Me neither...",
+   topic: "bananas",
+  };
+  return request(app)
+   .post("/api/articles")
+   .send(testObject)
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("1 or more properties not found");
+   });
+ });
+ test("should respond with a 404 error and appropriate error message when author does not exist in the database", () => {
+  const testObject = {
+   author: "banana",
+   title: "What to do?",
+   body: "Not sure what to do? Me neither...",
+   topic: "cats",
+  };
+  return request(app)
+   .post("/api/articles")
+   .send(testObject)
+   .expect(404)
+   .then(({ body }) => {
+    expect(body.msg).toBe("1 or more properties not found");
    });
  });
 });
