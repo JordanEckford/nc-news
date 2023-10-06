@@ -2,6 +2,7 @@ const {
  fetchUsers,
  fetchUsersByUsername,
  createUser,
+ removeUser,
 } = require("../models/users.model");
 
 exports.getUsers = (req, res, next) => {

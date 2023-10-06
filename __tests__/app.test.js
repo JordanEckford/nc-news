@@ -702,7 +702,7 @@ describe("POST: /api/topics", () => {
     );
    });
  });
- test("should return a 400 status code and appropriate error when passed a topic that already exists", () => {
+ test("should respond with a 400 status code and appropriate error when passed a topic that already exists", () => {
   const testObject = {
    slug: "mitch",
    description: "Loves testing",
@@ -715,7 +715,7 @@ describe("POST: /api/topics", () => {
     expect(body.msg).toBe("key already exists");
    });
  });
- test("should return a 400 status code and appropriate error when passed a correct object with additional keys", () => {
+ test("should respond with a 400 status code and appropriate error when passed a correct object with additional keys", () => {
   const testObject = {
    slug: "Jordan",
    description: "Loves testing",
@@ -729,7 +729,7 @@ describe("POST: /api/topics", () => {
     expect(body.msg).toBe("request body incorrect");
    });
  });
- test("should return a 400 status code and appropriate error when passed an incorrect object with correct number of keys", () => {
+ test("should respond with a 400 status code and appropriate error when passed an incorrect object with correct number of keys", () => {
   const testObject = {
    description: "Loves testing",
    isBanana: true,
@@ -742,7 +742,7 @@ describe("POST: /api/topics", () => {
     expect(body.msg).toBe("request body incorrect");
    });
  });
- test("should return a 400 status code and appropriate error when passed an object with not enough keys", () => {
+ test("should respond with a 400 status code and appropriate error when passed an object with not enough keys", () => {
   const testObject = {
    description: "Loves testing",
   };
@@ -756,7 +756,7 @@ describe("POST: /api/topics", () => {
  });
 });
 describe("DELETE: /api/articles/:article_id", () => {
- test("should return a 204 status code and no content, but delet all the comments relating to the passed article before deleting the article", () => {
+ test("should respond with a 204 status code and no content, but delete all the comments relating to the passed article before deleting the article", () => {
   return request(app)
    .delete("/api/articles/3")
    .expect(204)
@@ -769,7 +769,7 @@ describe("DELETE: /api/articles/:article_id", () => {
      });
    });
  });
- test("should return a 404 status and appropriate error when passed an article ID that doesn't exist", () => {
+ test("should respond with a 404 status and appropriate error when passed an article ID that doesn't exist", () => {
   return request(app)
    .delete("/api/articles/999")
    .expect(404)
@@ -777,7 +777,7 @@ describe("DELETE: /api/articles/:article_id", () => {
     expect(body.msg).toBe("not found");
    });
  });
- test("should return a 400 status and appropriate error when passed an article ID that doesn't fit formatting", () => {
+ test("should respond with a 400 status and appropriate error when passed an article ID that doesn't fit formatting", () => {
   return request(app)
    .delete("/api/articles/three")
    .expect(400)
@@ -787,7 +787,7 @@ describe("DELETE: /api/articles/:article_id", () => {
  });
 });
 describe("GET: /api/articles/:article_id/comments", () => {
- test("should return a 200 status code and the correct array of comments", () => {
+ test("should respond with a 200 status code and the correct array of comments", () => {
   return request(app)
    .get("/api/articles/1/comments?limit=5")
    .expect(200)
@@ -798,7 +798,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
     });
    });
  });
- test("should return a 200 status code and the correct array of comments when passed a limit and page num", () => {
+ test("should respond with a 200 status code and the correct array of comments when passed a limit and page num", () => {
   return request(app)
    .get("/api/articles/1/comments?limit=3&p=3")
    .expect(200)
@@ -814,7 +814,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
     expect(body.comments).toBeSortedBy("created_at", { descending: true });
    });
  });
- test("should return a 400 status and suitable error when passed a limit in the wrong format", () => {
+ test("should respond with a 400 status and suitable error when passed a limit in the wrong format", () => {
   return request(app)
    .get("/api/articles/1/comments?limit=three&p=3")
    .expect(400)
@@ -822,7 +822,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
     expect(body.msg).toBe("request included invalid format");
    });
  });
- test("should return a 400 status and suitable error when passed a page number in the wrong format", () => {
+ test("should respond with a 400 status and suitable error when passed a page number in the wrong format", () => {
   return request(app)
    .get("/api/articles/1/comments?limit=3&p=three")
    .expect(400)

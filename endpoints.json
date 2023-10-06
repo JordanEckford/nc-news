@@ -185,5 +185,19 @@
   "queries": [],
   "exampleResponse": {},
   "requestBodyFormat": {}
+ },
+ "POST /api/users": {
+  "description": "posts a user to the database and returns the newly created user object. username is a unique identifier",
+  "queries": [],
+  "exampleResponse": {
+   "username": "Jordan123",
+   "name": "Jordan",
+   "avatar_url": "test"
+  },
+  "requestBodyFormat": {
+   "username": "String (unique)",
+   "name": "String",
+   "avatar_url": "String (not required)"
+  }
  }
 }
