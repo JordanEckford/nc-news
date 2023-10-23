@@ -1,35 +1,16 @@
 const express = require("express");
-const {
- getTopics,
- getEndpoints,
- postTopic,
-} = require("./controllers/topics.controller");
-const {
- invalidPath,
- handleCustomErrors,
- handlePSQLErrors,
- handle500Errors,
-} = require("./controllers/errors.controller");
-const {
- getArticleByID,
- getArticles,
- patchArticleByID,
- postArticle,
- deleteArticle,
-} = require("./controllers/articles.controller");
-const {
- getCommentsByArticleID,
- deleteCommentByID,
- patchCommentByID,
- postCommentByArticleID,
-} = require("./controllers/comments.controller");
-const {
- getUsers,
- getUserByUsername,
-} = require("./controllers/users.controller");
+const { getTopics, getEndpoints, postTopic } = require("./controllers/topics.controller");
+const { invalidPath, handleCustomErrors, handlePSQLErrors, handle500Errors } = require("./controllers/errors.controller");
+const { getArticleByID, getArticles, patchArticleByID, postArticle, deleteArticle } = require("./controllers/articles.controller");
+const { getCommentsByArticleID, deleteCommentByID, patchCommentByID, postCommentByArticleID } = require("./controllers/comments.controller");
+const { getUsers, getUserByUsername } = require("./controllers/users.controller");
 const apiRouter = require("./routes/api-router");
+const cors = require("cors");
 
 const app = express();
+
+//connection to allow connections
+app.use(cors());
 
 //middleware connections
 app.use(express.json());
