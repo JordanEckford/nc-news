@@ -11,13 +11,7 @@ exports.fetchArticleByID = (articleID) => {
  });
 };
 
-exports.fetchArticles = (
- topic,
- sort_by = "created_at",
- order = "desc",
- limit = 10,
- p = 1
-) => {
+exports.fetchArticles = (topic, sort_by = "created_at", order = "desc", limit = 10, p = 1) => {
  const validSortBys = {
   article_id: "article_id",
   title: "title",
@@ -27,6 +21,7 @@ exports.fetchArticles = (
   created_at: "created_at",
   votes: "votes",
   article_img_url: "article_img_url",
+  comment_count: "comment_count",
  };
  const validOrders = {
   asc: "ASC",

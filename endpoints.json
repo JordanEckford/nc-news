@@ -21,16 +21,7 @@
    "limit",
    "p",
    {
-    "sort_by": [
-     "article_id",
-     "title",
-     "topic",
-     "author",
-     "body",
-     "created_at",
-     "votes",
-     "article_img_url"
-    ]
+    "sort_by": ["article_id", "title", "topic", "author", "body", "created_at", "votes", "article_img_url", "comment_count"]
    },
    { "order": ["desc", "asc"] }
   ],
