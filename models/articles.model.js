@@ -40,7 +40,7 @@ exports.fetchArticles = (topic, sort_by = "created_at", order = "desc", limit = 
   query += ` WHERE topic = $${values.length + 1}`;
   values.push(topic);
  }
- query += ` GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order} 
+ query += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order} 
  LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
 
  const pageNum = (+p - 1) * +limit;
